@@ -1,0 +1,2 @@
+Blatt 2 Aufgabe 3a)
+Auslagerung der Connections in Threads, damit der Server weiterhin auf neue Connections antworten kann (listen Methode)
