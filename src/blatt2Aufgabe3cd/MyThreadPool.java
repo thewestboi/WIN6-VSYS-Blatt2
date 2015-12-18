@@ -19,7 +19,7 @@ public class MyThreadPool {
 	public static void main(String[] args) {
 		ExecutorService executor = Executors.newFixedThreadPool(MAX_THREADS);
 		while (!done) {
-			executor.execute(new Task());
+			executor.execute(new Task(args[0]));
 		}
 		executor.shutdown();
 	}

@@ -12,6 +12,9 @@ public class PrimeServer {
 
 	private Component communication;
 	private int port = PORT;
+	public int threads = 0;
+	
+//	MyThreadPool myThreadPool = new MyThreadPool(8);
 
 	PrimeServer(int port) {
 		communication = new Component();
@@ -22,15 +25,7 @@ public class PrimeServer {
 		setLogLevel(Level.SEVERE);
 	}
 
-	private boolean primeService(long number) {
-		for (long i = 2; i < Math.sqrt(number) + 1; i++) {
-			if (number % i == 0)
-				return false;
-		}
-		return true;
-	}
-
-	void setLogLevel(Level level) {
+		void setLogLevel(Level level) {
 		for (Handler h : Logger.getLogger("").getHandlers())
 			h.setLevel(level);
 		LOGGER.setLevel(level);
@@ -39,7 +34,8 @@ public class PrimeServer {
 
 	void listen() {
 		LOGGER.info("Listening on port " + port);
-
+		MyThread[] myThread = new MyThread[1000];
+		
 		while (true) {
 			Long request = null;
 
@@ -50,16 +46,13 @@ public class PrimeServer {
 			} catch (ClassNotFoundException | IOException e) {
 				e.printStackTrace();
 			}
-			LOGGER.fine(request.toString() + " received.");
-
-			LOGGER.finer("Sending ...");
-			try {
-				communication.send(new Message("localhost", port, new Boolean(
-						primeService(request.longValue()))), port, true);
-			} catch (IOException e) {
-				e.printStackTrace();
+			
+			if (request != null) { //if message received
+				//do stuff in new thread				
+				myThread[threads] = new MyThread(LOGGER, communication, request, port);
+				myThread[threads++].run();
+				System.out.println("Threads: " + threads); //todo
 			}
-			LOGGER.fine("message sent.");
 		}
 	}
 
